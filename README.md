@@ -10,11 +10,13 @@ This tool produces a graph tracking the weight of each node and of each pair of 
 
 Properties = [ 'happy', 'sad', 'bored' ]
 
+```
 Eating Node {                             Eating-Basketball Edge {                    Basketball Node {
   happyWeight: 0.5,                         happyWeight: 0.85,                          happyWeight: 0.75,
   sadWeight: 0.5,             <----         sadWeight: 0.25,              ---->         sadWeight: 0.25,
   boredWeight: 0.25,                        boredWeight: 0.25,                          boredWeight: 0.1,
 }                                         }                                           }
+```
 
 ## How it works
 
@@ -24,6 +26,7 @@ Eating Node {                             Eating-Basketball Edge {              
       intensity rating = 8
       
 2. CatalystGraph updates each individual node's weight for producing the given output:
+```
       Eating Node {                       Eating Node {
         happyWeight: *0.5*,                 happyWeight: *0.6*,
         sadWeight: 0.5,         ---->       sadWeight: 0.5,
@@ -35,13 +38,16 @@ Eating Node {                             Eating-Basketball Edge {              
         sadWeight: 0.25,        ---->       sadWeight: 0.25,
         boredWeight: 0.1,                   boredWeight: 0.1,
       }                                   }
+```
       
 3. CatalystGraph then updates each pair of nodes's (each edge) weight for producing the given output:
+```
       Eating-Basketball Edge {            Eating-Basketball Edge {
         happyWeight: *0.85*,                happyWeight: *0.825*,
         sadWeight: 0.25,        ---->       sadWeight: 0.25,
         boredWeight: 0.25,                  boredWeight: 0.25,
       }                                   }
+```
       
 4. CatalystGraph now has an up-to-date weight of each node (and of each edge) to produce some output.
     This graph can then be traversed to find relations between nodes
