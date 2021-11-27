@@ -19,7 +19,7 @@ const getSingleTallyName = (rawName: string): string => `${getSinglePropertyName
 
 // BUILDING BASE NODE/EDGE
 
-const genPropertiesObj = (properties: string[]): Dict<number> => {
+export const genPropertiesObj = (properties: string[]): Dict<number> => {
     const propertiesObj: Dict<number> = {};
 
     // 1. Add each property's single average and tally
@@ -42,7 +42,7 @@ const genPropertiesObj = (properties: string[]): Dict<number> => {
     return propertiesObj;
 }
 
-export class CatalystGraph {
+export default class CatalystGraph {
     propertyNames: string[];
 
     _saveNode: SaveNode;
