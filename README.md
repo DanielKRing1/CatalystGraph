@@ -12,7 +12,7 @@ Properties = [ 'happy', 'sad', 'bored' ]
 
 ```
 Eating Node {                             Eating-Basketball Edge {                    Basketball Node {
-  happyWeight: 0.5,                         happyWeight: 0.85,                          happyWeight: 0.75,
+  happyWeight: 0.5,         linked to       happyWeight: 0.85,          linked to       happyWeight: 0.75,
   sadWeight: 0.5,             <----         sadWeight: 0.25,              ---->         sadWeight: 0.25,
   boredWeight: 0.25,                        boredWeight: 0.25,                          boredWeight: 0.1,
 }                                         }                                           }
@@ -28,13 +28,13 @@ Eating Node {                             Eating-Basketball Edge {              
 2. CatalystGraph updates each individual node's weight for producing the given output:
 ```
       Eating Node {                       Eating Node {
-        happyWeight: *0.5*,                 happyWeight: *0.6*,
+        happyWeight: *0.5*,    becomes      happyWeight: *0.6*,
         sadWeight: 0.5,         ---->       sadWeight: 0.5,
         boredWeight: 0.25,                  boredWeight: 0.25,
       }                                   }
       
       Basketball Node {                   Basketball Node {
-        happyWeight: *0.75*,                happyWeight: *0.775*,
+        happyWeight: *0.75*,   becomes      happyWeight: *0.775*,
         sadWeight: 0.25,        ---->       sadWeight: 0.25,
         boredWeight: 0.1,                   boredWeight: 0.1,
       }                                   }
@@ -43,7 +43,7 @@ Eating Node {                             Eating-Basketball Edge {              
 3. CatalystGraph then updates each pair of nodes's (each edge) weight for producing the given output:
 ```
       Eating-Basketball Edge {            Eating-Basketball Edge {
-        happyWeight: *0.85*,                happyWeight: *0.825*,
+        happyWeight: *0.85*,   becomes      happyWeight: *0.825*,
         sadWeight: 0.25,        ---->       sadWeight: 0.25,
         boredWeight: 0.25,                  boredWeight: 0.25,
       }                                   }
