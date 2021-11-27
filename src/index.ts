@@ -1,14 +1,5 @@
-import { CGEdge, CGNode, Dict } from "./global";
-
-enum GraphEntity {
-    CGNode,
-    CGEdge,
-}
-
-enum RatingMode {
-    Single,
-    Collective,
-}
+import { CGEdge, CGNode, Dict, GraphEntity, RatingMode } from "./types/graph";
+import { SaveNode, SaveEdge, GetNode, GetEdge, GetEdgeId, UpdateNode, UpdateEdge, CGSetup, RateReturn } from "./types/methods";
 
 // NAMING NODE/EDGE PROPERTIES
 
@@ -28,7 +19,7 @@ const getSingleTallyName = (rawName: string): string => `${getSinglePropertyName
 
 // BUILDING BASE NODE/EDGE
 
-export const genPropertiesObj = (properties: string[]): Dict<number> => {
+const genPropertiesObj = (properties: string[]): Dict<number> => {
     const propertiesObj: Dict<number> = {};
 
     // 1. Add each property's single average and tally
@@ -51,34 +42,7 @@ export const genPropertiesObj = (properties: string[]): Dict<number> => {
     return propertiesObj;
 }
 
-// USER-DEFINED METHODS
-type SaveNode = (node: CGNode) => void;
-type SaveEdge = (edge: CGEdge) => void;
-
-type GetNode = (nodeId: any) => CGNode;
-type GetEdge = (edgeId: any) => CGEdge;
-type GetEdgeId = (nodeId1: any, nodeId2: any) => any;
-
-type UpdateNode = (newNode: CGNode) => void;
-type UpdateEdge = (newEdge: CGEdge) => void;
-
-// CLASS METHODS
-type CGSetup = {
-    propertyNames: string[];
-    saveNode: SaveNode;
-    saveEdge: SaveEdge;
-    getNode: GetNode;
-    getEdge: GetEdge;
-    getEdgeId: GetEdgeId;
-    updateNode: UpdateNode;
-    updateEdge: UpdateEdge
-}
-type RateReturn = {
-    nodes: CGNode[];
-    edges: CGEdge[];
-}
-
-class CatalystGraph {
+export class CatalystGraph {
     propertyNames: string[];
 
     _saveNode: SaveNode;
@@ -311,35 +275,35 @@ class CatalystGraph {
     }
 }
 
-const allNodes: Dict<CGNode> = {};
-const allEdges: Dict<CGEdge> = {};
+// const allNodes: Dict<CGNode> = {};
+// const allEdges: Dict<CGEdge> = {};
 
-const params: CGSetup = {
-    propertyNames: [ 'fulfilled', 'depressed', 'bored' ],
+// const params: CGSetup = {
+//     propertyNames: [ 'fulfilled', 'depressed', 'bored' ],
     
-    saveNode: (newNode: CGNode) => allNodes[newNode.id] = newNode,
-    saveEdge: (newEdge: CGEdge) => allEdges[newEdge.id] = newEdge,
+//     saveNode: (newNode: CGNode) => allNodes[newNode.id] = newNode,
+//     saveEdge: (newEdge: CGEdge) => allEdges[newEdge.id] = newEdge,
 
-    getNode: (nodeId: string) => allNodes[nodeId],
-    getEdge: (edgeId: string) => allEdges[edgeId],
-    getEdgeId: (nodeId1: string, nodeId2) => [nodeId1, nodeId2].sort().join('-'),
+//     getNode: (nodeId: string) => allNodes[nodeId],
+//     getEdge: (edgeId: string) => allEdges[edgeId],
+//     getEdgeId: (nodeId1: string, nodeId2) => [nodeId1, nodeId2].sort().join('-'),
     
-    updateNode: (newNode: CGNode) => allNodes[newNode.id] = newNode,
-    updateEdge: (newEdge: CGEdge) => allEdges[newEdge.id] = newEdge,
-};
-const graph: CatalystGraph = new CatalystGraph(params);
+//     updateNode: (newNode: CGNode) => allNodes[newNode.id] = newNode,
+//     updateEdge: (newEdge: CGEdge) => allEdges[newEdge.id] = newEdge,
+// };
+// const graph: CatalystGraph = new CatalystGraph(params);
 
-graph.rate('fulfilled', ['eating', 'sleeping', 'basketball', 'tv'], 8, [1,1,1,1], RatingMode.Single);
-graph.rate('fulfilled', ['eating', 'sleeping', 'basketball', 'tv'], 8, [1,1,1,1], RatingMode.Collective);
+// graph.rate('fulfilled', ['eating', 'sleeping', 'basketball', 'tv'], 8, [1,1,1,1], RatingMode.Single);
+// graph.rate('fulfilled', ['eating', 'sleeping', 'basketball', 'tv'], 8, [1,1,1,1], RatingMode.Collective);
 
-graph.rate('depressed', ['eating', 'sleeping', 'tv'], 8, [1,1,1], RatingMode.Single);
-graph.rate('depressed', ['eating', 'sleeping', 'tv'], 8, [1,1,1], RatingMode.Collective);
+// graph.rate('depressed', ['eating', 'sleeping', 'tv'], 8, [1,1,1], RatingMode.Single);
+// graph.rate('depressed', ['eating', 'sleeping', 'tv'], 8, [1,1,1], RatingMode.Collective);
 
-graph.rate('bored', ['eating', 'tv'], 5, [1,1], RatingMode.Single);
-graph.rate('bored', ['eating', 'tv'], 5, [1,1], RatingMode.Collective);
+// graph.rate('bored', ['eating', 'tv'], 5, [1,1], RatingMode.Single);
+// graph.rate('bored', ['eating', 'tv'], 5, [1,1], RatingMode.Collective);
 
-graph.rate('fulfilled', ['sleeping', 'basketball', 'tv'], 6, [1,1,1], RatingMode.Single);
-graph.rate('fulfilled', ['sleeping', 'basketball', 'tv'], 6, [1,1,1], RatingMode.Collective);
+// graph.rate('fulfilled', ['sleeping', 'basketball', 'tv'], 6, [1,1,1], RatingMode.Single);
+// graph.rate('fulfilled', ['sleeping', 'basketball', 'tv'], 6, [1,1,1], RatingMode.Collective);
 
-console.log(allNodes);
-console.log(allEdges);
+// console.log(allNodes);
+// console.log(allEdges);

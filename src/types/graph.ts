@@ -8,3 +8,13 @@ export type CGEdge = {
     nodeId1: any;
     nodeId2: any;
 } & Dict<any>;
+
+export enum GraphEntity {
+    CGNode,
+    CGEdge,
+}
+
+export enum RatingMode {
+    Single,
+    Collective,
+}
