@@ -10,14 +10,14 @@ const COLLECTIVE_SUFFIX: string = 'COLLECTIVE';
 const AVERAGE_SUFFIX: string = 'AVG';
 const TALLY_SUFFIX: string = 'TALLY';
 
-const getSinglePropertyName = (rawName: string): string => `${rawName}_${SINGLE_SUFFIX}`;
-const getCollectivePropertyName = (rawName: string): string => `${rawName}_${COLLECTIVE_SUFFIX}`;
+export const genSinglePropertyName = (rawName: string): string => `${rawName}_${SINGLE_SUFFIX}`;
+export const genCollectivePropertyName = (rawName: string): string => `${rawName}_${COLLECTIVE_SUFFIX}`;
 
-const getCollectiveAverageName = (rawName: string): string => `${getCollectivePropertyName(rawName)}_${AVERAGE_SUFFIX}`;
-const getCollectiveTallyName = (): string => `${COLLECTIVE_SUFFIX}_${TALLY_SUFFIX}`;
+export const genCollectiveAverageName = (rawName: string): string => `${genCollectivePropertyName(rawName)}_${AVERAGE_SUFFIX}`;
+export const genCollectiveTallyName = (): string => `${COLLECTIVE_SUFFIX}_${TALLY_SUFFIX}`;
 
-const getSingleAverageName = (rawName: string): string => `${getSinglePropertyName(rawName)}_${AVERAGE_SUFFIX}`;
-const getSingleTallyName = (rawName: string): string => `${getSinglePropertyName(rawName)}_${TALLY_SUFFIX}`;
+export const genSingleAverageName = (rawName: string): string => `${genSinglePropertyName(rawName)}_${AVERAGE_SUFFIX}`;
+export const genSingleTallyName = (rawName: string): string => `${genSinglePropertyName(rawName)}_${TALLY_SUFFIX}`;
 
 // BUILDING BASE NODE/EDGE
 
@@ -27,18 +27,18 @@ export const genPropertiesObj = (properties: string[]): Dict<number> => {
     // 1. Add each property's single average and tally
     //      and its collective average
     for(const rawName of properties) {
-        const singleAvgName: string = getSingleAverageName(rawName);
+        const singleAvgName: string = genSingleAverageName(rawName);
         propertiesObj[singleAvgName] = 0;
 
-        const singleTallyName: string = getSingleTallyName(rawName);
+        const singleTallyName: string = genSingleTallyName(rawName);
         propertiesObj[singleTallyName] = 0;
 
-        const collectiveAvgName: string = getCollectiveAverageName(rawName);
+        const collectiveAvgName: string = genCollectiveAverageName(rawName);
         propertiesObj[collectiveAvgName] = 0;
     }
 
     // 2. Add a single collective tally
-    const collectiveTallyName: string = getCollectiveTallyName();
+    const collectiveTallyName: string = genCollectiveTallyName();
     propertiesObj[collectiveTallyName] = 0;
 
     return propertiesObj;
@@ -246,8 +246,8 @@ export default class CatalystGraph {
 
     _rateSingle(propertyName: string, graphEntities: CGNode[] | CGEdge[], rating: number, weights: number[]): CGNode[] | CGEdge[] {
         // 1. Get property names
-        const propertyAvgName: string = getSingleAverageName(propertyName);
-        const propertyTallyName: string = getSingleTallyName(propertyName);
+        const propertyAvgName: string = genSingleAverageName(propertyName);
+        const propertyTallyName: string = genSingleTallyName(propertyName);
 
         // 2. Sum weights
         const totalWeight: number = weights.reduce((sum: number, cur: number) => sum + cur, 0);
@@ -272,9 +272,9 @@ export default class CatalystGraph {
 
     _rateCollective(propertyName: string, graphEntities: CGNode[] | CGEdge[], rating: number, weights: number[]) {
         // 1. Get property names
-        const targetCollectiveAvgName: string = getCollectiveAverageName(propertyName);
-        const allCollectiveAvgNames: string[] = this.propertyNames.map((propertyName) => getCollectiveAverageName(propertyName));
-        const collectiveTallyName: string = getCollectiveTallyName();
+        const targetCollectiveAvgName: string = genCollectiveAverageName(propertyName);
+        const allCollectiveAvgNames: string[] = this.propertyNames.map((propertyName) => genCollectiveAverageName(propertyName));
+        const collectiveTallyName: string = genCollectiveTallyName();
 
         // 2. Sum weights
         const totalWeight: number = weights.reduce((sum: number, cur: number) => sum + cur, 0);
