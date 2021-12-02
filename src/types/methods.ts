@@ -6,7 +6,7 @@ export type SaveEdge = (edge: CGEdge) => void;
 
 export type GetNode = (nodeId: any) => CGNode;
 export type GetEdge = (edgeId: any) => CGEdge;
-export type GetEdgeId = (nodeId1: any, nodeId2: any) => any;
+export type GenEdgeId = (nodeId1: any, nodeId2: any) => any;
 
 export type UpdateNode = (newNode: CGNode) => void;
 export type UpdateEdge = (newEdge: CGEdge) => void;
@@ -18,7 +18,7 @@ export type CGSetup = {
     saveEdge: SaveEdge;
     getNode: GetNode;
     getEdge: GetEdge;
-    getEdgeId: GetEdgeId;
+    genEdgeId: GenEdgeId;
     updateNode: UpdateNode;
     updateEdge: UpdateEdge
 }

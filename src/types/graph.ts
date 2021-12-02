@@ -2,6 +2,7 @@ export type Dict<T> = Record<string, T>;
 
 export type CGNode = {
     id: any;
+    edgeIds: string[];
 } & Dict<any>;
 export type CGEdge = {
     id: any;

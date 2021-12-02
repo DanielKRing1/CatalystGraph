@@ -1,5 +1,5 @@
 import { CGEdge, CGNode, Dict, GraphEntity, RatingMode } from "./types/graph";
-import { SaveNode, SaveEdge, GetNode, GetEdge, GetEdgeId, UpdateNode, UpdateEdge, CGSetup, RateReturn } from "./types/methods";
+import { SaveNode, SaveEdge, GetNode, GetEdge, GenEdgeId, UpdateNode, UpdateEdge, CGSetup, RateReturn } from "./types/methods";
 
 export * from "./types";
 
@@ -53,13 +53,13 @@ export default class CatalystGraph {
     _getNode: GetNode;
     _getEdge: GetEdge;
 
-    getEdgeId: GetEdgeId;
+    genEdgeId: GenEdgeId;
 
     updateNode: UpdateNode;
     updateEdge: UpdateEdge;
 
     constructor(args: CGSetup) {
-        const { propertyNames, saveNode, saveEdge, getNode, getEdge, getEdgeId, updateNode, updateEdge } = args;
+        const { propertyNames, saveNode, saveEdge, getNode, getEdge, genEdgeId, updateNode, updateEdge } = args;
 
         this.propertyNames = propertyNames;
 
@@ -68,7 +68,7 @@ export default class CatalystGraph {
 
         this._getNode = getNode;
         this._getEdge = getEdge;
-        this.getEdgeId = getEdgeId;
+        this.genEdgeId = genEdgeId;
 
         this.updateNode = updateNode;
         this.updateEdge = updateEdge;
@@ -79,6 +79,7 @@ export default class CatalystGraph {
     
         return {
             id,
+            edgeIds: [],
             ...propertiesObj,
         }
     }
@@ -86,7 +87,7 @@ export default class CatalystGraph {
     genEdge(nodeId1: any, nodeId2: any, propertyNames: string[]): CGEdge {
         const propertiesObj: Dict<number> = genPropertiesObj(propertyNames);
     
-        const edgeId: any = this.getEdgeId(nodeId1, nodeId2);
+        const edgeId: any = this.genEdgeId(nodeId1, nodeId2);
         return {
             id: edgeId,
             nodeId1,
@@ -169,7 +170,7 @@ export default class CatalystGraph {
 
             case GraphEntity.CGEdge:
             default:
-                const edgeId: any = this.getEdgeId(ids[0], ids[1]);
+                const edgeId: any = this.genEdgeId(ids[0], ids[1]);
                 graphEntity = this._getEdge(edgeId);
                 if(!graphEntity) graphEntity = this.createAndSaveGraphEntity(ids, GraphEntity.CGEdge);
             break;
@@ -180,10 +181,10 @@ export default class CatalystGraph {
 
     rate(propertyName: string, nodeIds: any[], rating: number, weights: number[], ratingMode: RatingMode): RateReturn {
         // 1. Get CGNodes
-        const nodesInitial: CGNode[] = nodeIds.map((id: any) => this.getGraphEntity([id], GraphEntity.CGNode));
+        const nodesInitial: CGNode[] = nodeIds.map((id: any) => this.getGraphEntity([id], GraphEntity.CGNode)) as CGNode[];
 
         // 2.1. Update nodes
-        const nodesUpdated: CGNode[] = ratingMode === RatingMode.Single ? this._rateSingle(propertyName, nodesInitial, rating, weights) : this._rateCollective(propertyName, nodesInitial, rating, weights);
+        const nodesUpdated: CGNode[] = (ratingMode === RatingMode.Single ? this._rateSingle(propertyName, nodesInitial, rating, weights) : this._rateCollective(propertyName, nodesInitial, rating, weights)) as CGNode[];
         // 2.2. Apply node updates
         nodesUpdated.forEach((node: CGNode) => this.updateNode(node));
 
@@ -290,7 +291,7 @@ export default class CatalystGraph {
 
 //     getNode: (nodeId: string) => allNodes[nodeId],
 //     getEdge: (edgeId: string) => allEdges[edgeId],
-//     getEdgeId: (nodeId1: string, nodeId2) => [nodeId1, nodeId2].sort().join('-'),
+//     genEdgeId: (nodeId1: string, nodeId2) => [nodeId1, nodeId2].sort().join('-'),
     
 //     updateNode: (newNode: CGNode) => allNodes[newNode.id] = newNode,
 //     updateEdge: (newEdge: CGEdge) => allEdges[newEdge.id] = newEdge,
