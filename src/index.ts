@@ -1,6 +1,8 @@
 import { CGEdge, CGNode, Dict, GraphEntity, RatingMode } from "./types/graph";
 import { SaveNode, SaveEdge, GetNode, GetEdge, GetEdgeId, UpdateNode, UpdateEdge, CGSetup, RateReturn } from "./types/methods";
 
+export * from "./types";
+
 // NAMING NODE/EDGE PROPERTIES
 
 const SINGLE_SUFFIX: string = 'SINGLE';
@@ -111,6 +113,7 @@ export default class CatalystGraph {
             break;
 
             case GraphEntity.CGEdge:
+            default:
                 const nodeId1: any = ids[0];
                 const nodeId2: any = ids[1];
                 graphEntity = this.genEdge(nodeId1, nodeId2, this.propertyNames);
@@ -165,6 +168,7 @@ export default class CatalystGraph {
             break;
 
             case GraphEntity.CGEdge:
+            default:
                 const edgeId: any = this.getEdgeId(ids[0], ids[1]);
                 graphEntity = this._getEdge(edgeId);
                 if(!graphEntity) graphEntity = this.createAndSaveGraphEntity(ids, GraphEntity.CGEdge);
