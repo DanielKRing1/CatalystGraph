@@ -180,35 +180,62 @@ export default class CatalystGraph {
     }
 
     rate(propertyName: string, nodeIds: any[], rating: number, weights: number[], ratingMode: RatingMode): RateReturn {
-        // 1. Get CGNodes
-        const nodesInitial: CGNode[] = nodeIds.map((id: any) => this.getGraphEntity([id], GraphEntity.CGNode)) as CGNode[];
-
-        // 2.1. Update nodes
-        const nodesUpdated: CGNode[] = (ratingMode === RatingMode.Single ? this._rateSingle(propertyName, nodesInitial, rating, weights) : this._rateCollective(propertyName, nodesInitial, rating, weights)) as CGNode[];
-        // 2.2. Apply node updates
-        nodesUpdated.forEach((node: CGNode) => this.updateNode(node));
-
-        // 3. Get all CGEdge combos
+        // EDGES
+        
+        // 1. Get all CGEdge combos
         const edgesInitial: CGEdge[] = [];
         const edgeWeights: number[] = [];
+        // Map from each nodeId to all updated, connected edges
+        const nodeUpdatedEdgeMap: Dict<string[]> = {};
         for(let i = 0; i < nodeIds.length; i++) {
             for(let j = i+1; j < nodeIds.length; j++) {
                 const nodeId1: any = nodeIds[i];
                 const nodeId2: any = nodeIds[j];
 
-                // 3.1. Track edge
+                // 1.1. Track edge
                 const edge: CGEdge = this.getGraphEntity([nodeId1, nodeId2], GraphEntity.CGEdge) as CGEdge;
                 edgesInitial.push(edge);
 
-                // 3.2. Track edge's weight
+                // 1.2. Track edge's weight
                 const edgeWeight: number = (weights[i] + weights[j]) / 2;
                 edgeWeights.push(edgeWeight);
+
+                const edgeId: string = this.genEdgeId(nodeId1, nodeId2);
+                // 1.3. Track edge associated with node1 and node2
+                if(!nodeUpdatedEdgeMap[nodeId1]) nodeUpdatedEdgeMap[nodeId1] = [];
+                if(!nodeUpdatedEdgeMap[nodeId2]) nodeUpdatedEdgeMap[nodeId2] = [];
+                nodeUpdatedEdgeMap[nodeId1].push(edgeId);
+                nodeUpdatedEdgeMap[nodeId2].push(edgeId);
             }
         }
-        // 4.1. Update edges
+        // 2.1. Update edge object properties
         const edgesUpdated: CGEdge[] = (ratingMode == RatingMode.Single ? this._rateSingle(propertyName, edgesInitial, rating, edgeWeights) : this._rateCollective(propertyName, edgesInitial, rating, edgeWeights)) as CGEdge[];
-        // 4.2. Apply edges updates
+        // 2.2. Apply edges updates
         edgesUpdated.forEach((edge: CGEdge) => this.updateEdge(edge));
+
+        // NODES
+
+        // 3. Get CGNodes
+        const nodesInitial: CGNode[] = nodeIds.map((id: any) => this.getGraphEntity([id], GraphEntity.CGNode)) as CGNode[];
+
+        // 4. Update node's list of connected edge ids
+        nodesInitial.forEach((node: CGNode) => {
+            // 4.1. Get set of existing edge ids
+            const allEdgeIds: Set<string> = new Set(node.edgeIds);
+
+            // 4.2. Get set of updated edge ids
+            const updatedEdgeIds: string[] = nodeUpdatedEdgeMap[node.id];
+
+            // 4.3. Merge sets
+            updatedEdgeIds.forEach((id: string) => allEdgeIds.add(id));
+            // 4.4. Overwrite node's edgeIds with full, merged set
+            node.edgeIds = Array.from(allEdgeIds);
+        });
+
+        // 5.1. Update node object properties
+        const nodesUpdated: CGNode[] = (ratingMode === RatingMode.Single ? this._rateSingle(propertyName, nodesInitial, rating, weights) : this._rateCollective(propertyName, nodesInitial, rating, weights)) as CGNode[];
+        // 5.2. Apply node updates
+        nodesUpdated.forEach((node: CGNode) => this.updateNode(node));
 
         // Return graph entities with new state
         return {
