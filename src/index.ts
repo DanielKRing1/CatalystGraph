@@ -10,8 +10,8 @@ const COLLECTIVE_SUFFIX: string = 'COLLECTIVE';
 const AVERAGE_SUFFIX: string = 'AVG';
 const TALLY_SUFFIX: string = 'TALLY';
 
-export const genSinglePropertyName = (rawName: string): string => `${rawName}_${SINGLE_SUFFIX}`;
-export const genCollectivePropertyName = (rawName: string): string => `${rawName}_${COLLECTIVE_SUFFIX}`;
+const genSinglePropertyName = (rawName: string): string => `${rawName}_${SINGLE_SUFFIX}`;
+const genCollectivePropertyName = (rawName: string): string => `${rawName}_${COLLECTIVE_SUFFIX}`;
 
 export const genCollectiveAverageName = (rawName: string): string => `${genCollectivePropertyName(rawName)}_${AVERAGE_SUFFIX}`;
 export const genCollectiveTallyName = (): string => `${COLLECTIVE_SUFFIX}_${TALLY_SUFFIX}`;
