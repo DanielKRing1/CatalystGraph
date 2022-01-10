@@ -166,14 +166,14 @@ export default class CatalystGraph {
             case GraphEntity.CGNode:
                 const nodeId: any = ids[0];
                 graphEntity = this._getNode(nodeId);
-                if (!graphEntity) graphEntity = this.createAndSaveGraphEntity(ids, GraphEntity.CGNode);
+                if (!graphEntity || Object.keys(graphEntity).length === 0) graphEntity = this.createAndSaveGraphEntity(ids, GraphEntity.CGNode);
                 break;
 
             case GraphEntity.CGEdge:
             default:
                 const edgeId: any = this.genEdgeId(ids[0], ids[1]);
                 graphEntity = this._getEdge(edgeId);
-                if (!graphEntity) graphEntity = this.createAndSaveGraphEntity(ids, GraphEntity.CGEdge);
+                if (!graphEntity || Object.keys(graphEntity).length === 0) graphEntity = this.createAndSaveGraphEntity(ids, GraphEntity.CGEdge);
                 break;
         }
 
