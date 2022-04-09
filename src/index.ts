@@ -210,6 +210,8 @@ export default class CatalystGraph {
             }
         }
         // 2.1. Update edge object properties
+        // const totalEdgeWeight: number = edgeWeights.reduce((sum: number, cur: number) => sum + cur, 0);
+        // const edgeWeightPercent: number[] = edgeWeights.map((edgeWeight: number) => edgeWeight / totalEdgeWeight);
         const edgesUpdated: CGEdge[] = (
             ratingMode == RatingMode.Single ? this._rateSingle(propertyName, edgesInitial, rating, edgeWeights) : this._rateCollective(propertyName, edgesInitial, rating, edgeWeights)
         ) as CGEdge[];
@@ -254,22 +256,16 @@ export default class CatalystGraph {
         const propertyAvgName: string = genSingleAverageName(propertyName);
         const propertyTallyName: string = genSingleTallyName(propertyName);
 
-        // 2. Sum weights
-        const totalWeight: number = weights.reduce((sum: number, cur: number) => sum + cur, 0);
-
         graphEntities.forEach((graphEntity: CGNode | CGEdge, index: number) => {
-            // 3. Get initial state
+            // 2. Get initial state
             const avg: number = graphEntity[propertyAvgName];
             const tally: number = graphEntity[propertyTallyName];
 
-            // 4. Factor in weight
-            const weight: number = weights[index] / totalWeight;
-
-            // const weight: number = weights[index];
-
+            // 3. Factor in weight
+            const weight: number = weights[index];
             const weightedRating: number = rating * weight;
 
-            // 5. Update state
+            // 4. Update state
             graphEntity[propertyAvgName] = (avg * tally + weightedRating) / (tally + weight);
             graphEntity[propertyTallyName] += weight;
         });
@@ -284,31 +280,26 @@ export default class CatalystGraph {
         const allCollectiveAvgNames: string[] = this.propertyNames.map((propertyName) => genCollectiveAverageName(propertyName));
         const collectiveTallyName: string = genCollectiveTallyName();
 
-        // 2. Sum weights
-        const totalWeight: number = weights.reduce((sum: number, cur: number) => sum + cur, 0);
-
         // For each graph entity
         graphEntities.forEach((graphEntity: CGNode | CGEdge, index: number) => {
-            // 3.1. Get initial state
+            const weight: number = weights[index];
+
+            // 2.1. Get initial state
             const tally: number = graphEntity[collectiveTallyName];
-
-            const weight: number = weights[index] / totalWeight;
-
-            // const weight: number = weights[index];
 
             // For each collective property
             allCollectiveAvgNames.forEach((collectiveAvgName: string) => {
-                // 3.2. Get initial state
+                // 2.2. Get initial state
                 const avg: number = graphEntity[collectiveAvgName];
 
-                // 4. Factor in weight
+                // 3. Factor in weight
                 const weightedRating: number = collectiveAvgName == targetCollectiveAvgName ? weight * rating : 0;
 
-                // 5.1. Update state
+                // 4.1. Update state
                 graphEntity[collectiveAvgName] = (avg * tally + weightedRating) / (tally + weight);
             });
 
-            // 5.2. Update state
+            // 4.2. Update state
             graphEntity[collectiveTallyName] += weight;
         });
 
