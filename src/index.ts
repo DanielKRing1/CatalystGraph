@@ -255,7 +255,7 @@ export default class CatalystGraph {
         const propertyTallyName: string = genSingleTallyName(propertyName);
 
         // 2. Sum weights
-        const totalWeight: number = weights.reduce((sum: number, cur: number) => sum + cur, 0);
+        // const totalWeight: number = weights.reduce((sum: number, cur: number) => sum + cur, 0);
 
         graphEntities.forEach((graphEntity: CGNode | CGEdge, index: number) => {
             // 3. Get initial state
@@ -263,7 +263,10 @@ export default class CatalystGraph {
             const tally: number = graphEntity[propertyTallyName];
 
             // 4. Factor in weight
-            const weight: number = weights[index] / totalWeight;
+            // const weight: number = weights[index] / totalWeight;
+
+            const weight: number = weights[index];
+
             const weightedRating: number = rating * weight;
 
             // 5. Update state
@@ -282,14 +285,16 @@ export default class CatalystGraph {
         const collectiveTallyName: string = genCollectiveTallyName();
 
         // 2. Sum weights
-        const totalWeight: number = weights.reduce((sum: number, cur: number) => sum + cur, 0);
+        // const totalWeight: number = weights.reduce((sum: number, cur: number) => sum + cur, 0);
 
         // For each graph entity
         graphEntities.forEach((graphEntity: CGNode | CGEdge, index: number) => {
             // 3.1. Get initial state
             const tally: number = graphEntity[collectiveTallyName];
 
-            const weight: number = weights[index] / totalWeight;
+            // const weight: number = weights[index] / totalWeight;
+
+            const weight: number = weights[index];
 
             // For each collective property
             allCollectiveAvgNames.forEach((collectiveAvgName: string) => {
