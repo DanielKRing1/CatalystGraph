@@ -309,7 +309,7 @@ export default class CatalystGraph {
             });
 
             // 4.2. Update state
-            graphEntity[collectiveTallyName] += weight;
+            graphEntity[collectiveTallyName] = newTally;
         });
 
         // Return graph entities with new state
