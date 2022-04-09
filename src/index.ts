@@ -1,5 +1,6 @@
 import { CGEdge, CGNode, Dict, GraphEntity, RatingMode } from './types/graph';
 import { SaveNode, SaveEdge, GetNode, GetEdge, GenEdgeId, UpdateNode, UpdateEdge, CGSetup, RateReturn } from './types/methods';
+import { round } from './utils/rounding';
 
 export * from './types';
 export { RatingMode } from './types';
@@ -268,10 +269,10 @@ export default class CatalystGraph {
             const weightedRating: number = rating * weight;
 
             // 4. Update state
-            const newTally: number = tally + weight;
+            const newTally: number = round(tally + weight, this.propertyPrecision);
             //      If undoing a rating, newTally may equal 0; do not divide by 0
             if(newTally === 0) graphEntity[propertyAvgName] = 0
-            else graphEntity[propertyAvgName] = ((avg * tally + weightedRating) / (tally + weight)).toFixed(this.propertyPrecision);
+            else graphEntity[propertyAvgName] = round((avg * tally + weightedRating) / (tally + weight), this.propertyPrecision);
             graphEntity[propertyTallyName] += weight;
         });
 
@@ -301,10 +302,10 @@ export default class CatalystGraph {
                 const weightedRating: number = collectiveAvgName == targetCollectiveAvgName ? weight * rating : 0;
 
                 // 4.1. Update state
-                const newTally: number = tally + weight;
+                const newTally: number = round(tally + weight, this.propertyPrecision);
                             //      If undoing a rating, newTally may equal 0; do not divide by 0
                 if(newTally === 0) graphEntity[collectiveAvgName] = 0
-                else graphEntity[collectiveAvgName] = ((avg * tally + weightedRating) / newTally).toFixed(this.propertyPrecision);
+                else graphEntity[collectiveAvgName] = round((avg * tally + weightedRating) / newTally, this.propertyPrecision);
             });
 
             // 4.2. Update state
