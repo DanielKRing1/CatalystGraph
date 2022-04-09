@@ -46,6 +46,7 @@ export const genPropertiesObj = (properties: string[]): Dict<number> => {
 };
 
 export default class CatalystGraph {
+    propertyPrecision: number;
     propertyNames: string[];
 
     _saveNode: SaveNode;
@@ -60,8 +61,9 @@ export default class CatalystGraph {
     updateEdge: UpdateEdge;
 
     constructor(args: CGSetup) {
-        const { propertyNames, saveNode, saveEdge, getNode, getEdge, genEdgeId, updateNode, updateEdge } = args;
+        const { propertyPrecision = 5, propertyNames, saveNode, saveEdge, getNode, getEdge, genEdgeId, updateNode, updateEdge } = args;
 
+        this.propertyPrecision = propertyPrecision;
         this.propertyNames = propertyNames;
 
         this._saveNode = saveNode;
@@ -266,7 +268,10 @@ export default class CatalystGraph {
             const weightedRating: number = rating * weight;
 
             // 4. Update state
-            graphEntity[propertyAvgName] = (avg * tally + weightedRating) / (tally + weight);
+            const newTally: number = tally + weight;
+            //      If undoing a rating, newTally may equal 0; do not divide by 0
+            if(newTally === 0) graphEntity[propertyAvgName] = 0
+            else graphEntity[propertyAvgName] = ((avg * tally + weightedRating) / (tally + weight)).toFixed(this.propertyPrecision);
             graphEntity[propertyTallyName] += weight;
         });
 
@@ -296,7 +301,10 @@ export default class CatalystGraph {
                 const weightedRating: number = collectiveAvgName == targetCollectiveAvgName ? weight * rating : 0;
 
                 // 4.1. Update state
-                graphEntity[collectiveAvgName] = (avg * tally + weightedRating) / (tally + weight);
+                const newTally: number = tally + weight;
+                            //      If undoing a rating, newTally may equal 0; do not divide by 0
+                if(newTally === 0) graphEntity[collectiveAvgName] = 0
+                else graphEntity[collectiveAvgName] = ((avg * tally + weightedRating) / newTally).toFixed(this.propertyPrecision);
             });
 
             // 4.2. Update state

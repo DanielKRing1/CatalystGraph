@@ -13,6 +13,8 @@ export type UpdateEdge = (newEdge: CGEdge) => void;
 
 // CLASS METHODS
 export type CGSetup = {
+    propertyPrecision?: number;
+
     propertyNames: string[];
     saveNode: SaveNode;
     saveEdge: SaveEdge;
