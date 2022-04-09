@@ -273,7 +273,7 @@ export default class CatalystGraph {
             //      If undoing a rating, newTally may equal 0; do not divide by 0
             if(newTally === 0) graphEntity[propertyAvgName] = 0
             else graphEntity[propertyAvgName] = round((avg * tally + weightedRating) / (tally + weight), this.propertyPrecision);
-            graphEntity[propertyTallyName] += weight;
+            graphEntity[propertyTallyName] = newTally;
         });
 
         // Return graph entities with new state
@@ -292,6 +292,7 @@ export default class CatalystGraph {
 
             // 2.1. Get initial state
             const tally: number = graphEntity[collectiveTallyName];
+            const newTally: number = round(tally + weight, this.propertyPrecision);
 
             // For each collective property
             allCollectiveAvgNames.forEach((collectiveAvgName: string) => {
@@ -302,8 +303,7 @@ export default class CatalystGraph {
                 const weightedRating: number = collectiveAvgName == targetCollectiveAvgName ? weight * rating : 0;
 
                 // 4.1. Update state
-                const newTally: number = round(tally + weight, this.propertyPrecision);
-                            //      If undoing a rating, newTally may equal 0; do not divide by 0
+                //      If undoing a rating, newTally may equal 0; do not divide by 0
                 if(newTally === 0) graphEntity[collectiveAvgName] = 0
                 else graphEntity[collectiveAvgName] = round((avg * tally + weightedRating) / newTally, this.propertyPrecision);
             });
