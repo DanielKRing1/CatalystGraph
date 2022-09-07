@@ -7,19 +7,22 @@ export { RatingMode } from './types';
 
 // NAMING NODE/EDGE PROPERTIES
 
+export const GRAPH_ENTITY_ID_KEY: string = 'id';
+export const EDGE_IDS_KEY: string = 'edgeIds';
+export const SUFFIX_DELIM: string = '-';
 const SINGLE_SUFFIX: string = 'SINGLE';
 const COLLECTIVE_SUFFIX: string = 'COLLECTIVE';
 const AVERAGE_SUFFIX: string = 'AVG';
 const TALLY_SUFFIX: string = 'TALLY';
 
-const genSinglePropertyName = (rawName: string): string => `${rawName}_${SINGLE_SUFFIX}`;
-const genCollectivePropertyName = (rawName: string): string => `${rawName}_${COLLECTIVE_SUFFIX}`;
+const genSinglePropertyName = (rawName: string): string => `${rawName}${SUFFIX_DELIM}${SINGLE_SUFFIX}`;
+const genCollectivePropertyName = (rawName: string): string => `${rawName}${SUFFIX_DELIM}${COLLECTIVE_SUFFIX}`;
 
-export const genCollectiveAverageName = (rawName: string): string => `${genCollectivePropertyName(rawName)}_${AVERAGE_SUFFIX}`;
-export const genCollectiveTallyName = (): string => `${COLLECTIVE_SUFFIX}_${TALLY_SUFFIX}`;
+export const genCollectiveAverageName = (rawName: string): string => `${genCollectivePropertyName(rawName)}${SUFFIX_DELIM}${AVERAGE_SUFFIX}`;
+export const genCollectiveTallyName = (): string => `${COLLECTIVE_SUFFIX}${SUFFIX_DELIM}${TALLY_SUFFIX}`;
 
-export const genSingleAverageName = (rawName: string): string => `${genSinglePropertyName(rawName)}_${AVERAGE_SUFFIX}`;
-export const genSingleTallyName = (rawName: string): string => `${genSinglePropertyName(rawName)}_${TALLY_SUFFIX}`;
+export const genSingleAverageName = (rawName: string): string => `${genSinglePropertyName(rawName)}${SUFFIX_DELIM}${AVERAGE_SUFFIX}`;
+export const genSingleTallyName = (rawName: string): string => `${genSinglePropertyName(rawName)}${SUFFIX_DELIM}${TALLY_SUFFIX}`;
 
 // BUILDING BASE NODE/EDGE
 
