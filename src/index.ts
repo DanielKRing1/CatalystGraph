@@ -25,10 +25,12 @@ export const genCollectiveTallyName = (): string => `${COLLECTIVE_SUFFIX}${SUFFI
 
 export const genSingleAverageName = (rawName: string): string => `${genSinglePropertyName(rawName)}${SUFFIX_DELIM}${AVERAGE_SUFFIX}`;
 export const genSingleTallyName = (rawName: string): string => `${genSinglePropertyName(rawName)}${SUFFIX_DELIM}${TALLY_SUFFIX}`;
-export const getPropertyNameFromGraphKey = (graphKey: string): string => {
-    const index: number = graphKey.lastIndexOf(PROPERTY_DELIM);
-    return graphKey.slice(0, index);
-}
+export const getGraphPropertyNameFromKey = (rawPropertyName: string) => {
+    const index: number = rawPropertyName.lastIndexOf(PROPERTY_DELIM);
+    const baseName: string = rawPropertyName.slice(0, index);
+
+    return baseName;
+};
 
 // BUILDING BASE NODE/EDGE
 
