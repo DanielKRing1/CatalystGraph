@@ -1,6 +1,7 @@
 import { CGEdge, CGNode, Dict, GraphEntity, RatingMode } from './types/graph';
 import { SaveNode, SaveEdge, GetNode, GetEdge, GenEdgeId, UpdateNode, UpdateEdge, CGSetup, RateReturn } from './types/methods';
 import { round } from './utils/rounding';
+import { triangularNumber } from './utils/summation';
 
 export * from './types';
 export { RatingMode } from './types';
@@ -24,6 +25,10 @@ export const genCollectiveTallyName = (): string => `${COLLECTIVE_SUFFIX}${SUFFI
 
 export const genSingleAverageName = (rawName: string): string => `${genSinglePropertyName(rawName)}${SUFFIX_DELIM}${AVERAGE_SUFFIX}`;
 export const genSingleTallyName = (rawName: string): string => `${genSinglePropertyName(rawName)}${SUFFIX_DELIM}${TALLY_SUFFIX}`;
+export const getPropertyNameFromGraphKey = (graphKey: string): string => {
+    const index: number = graphKey.lastIndexOf(PROPERTY_DELIM);
+    return graphKey.slice(0, index);
+}
 
 // BUILDING BASE NODE/EDGE
 
@@ -190,6 +195,9 @@ export default class CatalystGraph {
     rate(propertyName: string, nodeIds: any[], rating: number, weights: number[], ratingMode: RatingMode): RateReturn {
         // EDGES
 
+        // // TODO Can use this technique to calculate edge weights so their sum == 1
+        // const totalEdges: number = triangularNumber(nodeIds.length-1);
+
         // 1. Get all CGEdge combos
         const edgesInitial: CGEdge[] = [];
         const edgeWeights: number[] = [];
@@ -206,6 +214,8 @@ export default class CatalystGraph {
 
                 // 1.2. Track edge's weight
                 const edgeWeight: number = (weights[i] + weights[j]) / 2;
+                // TODO Part of aforementioned technique ^^
+                // const edgeWeight: number = (weights[i] + weights[j]) / (2/nodeIds.length) / totalEdges;
                 edgeWeights.push(edgeWeight);
 
                 const edgeId: string = this.genEdgeId(nodeId1, nodeId2);
