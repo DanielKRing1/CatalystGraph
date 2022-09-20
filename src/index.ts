@@ -194,6 +194,11 @@ export default class CatalystGraph {
         return graphEntity;
     }
 
+    undoRate(propertyName: string, nodeIds: any[], rating: number, weights: number[], ratingMode: RatingMode): RateReturn {
+        weights = weights.map((weight: number) => -1*weight);
+        return this.rate(propertyName, nodeIds, rating, weights, ratingMode);
+    }
+
     rate(propertyName: string, nodeIds: any[], rating: number, weights: number[], ratingMode: RatingMode): RateReturn {
         // EDGES
 
