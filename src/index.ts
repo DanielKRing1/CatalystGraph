@@ -253,7 +253,7 @@ export default class CatalystGraph {
             const allEdgeIds: Set<string> = new Set(node.edgeIds);
 
             // 4.2. Get set of updated edge ids
-            const updatedEdgeIds: string[] = nodeUpdatedEdgeMap[node.id];
+            const updatedEdgeIds: string[] = nodeUpdatedEdgeMap[node.id] || [];
 
             // 4.3. Merge sets
             updatedEdgeIds.forEach((id: string) => allEdgeIds.add(id));
